@@ -20,7 +20,7 @@ const customStyles = computed(() => (props.color ? { color: props.color } : {}))
   <i
     class="mr-icon"
     :class="{
-      [`mr-icon--${type}`]: type,
+      [`mr-icon-${type}`]: type,
     }"
     :style="customStyles"
     v-bind="$attrs"

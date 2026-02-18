@@ -17,7 +17,6 @@ defineExpose({
   ref: buttonRef,
 })
 </script>
-
 <template>
   <button
     ref="buttonRef"

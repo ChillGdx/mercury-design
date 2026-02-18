@@ -15,7 +15,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Components', link: '/components/button' },
     ],
-    socialLinks: [{ icon: 'github', link: 'https://github.com/HasonoCell/Mercury-Design' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/ChillGdx/mercury-design' }],
     sidebar: {
       '/': [
         { text: 'Home', link: '/' },

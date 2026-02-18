@@ -2,8 +2,8 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [ master ]  # 与 npm 发布保持一致，推送到 master 时触发
-  workflow_dispatch:      # 允许手动触发部署
+    branches: [ master ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -25,16 +25,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: 'pnpm'  # 保留 pnpm 缓存，加速安装
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      # 改用官方 pnpm action 配置环境
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build documentation
-        run: pnpm docs:build  # 执行你的文档构建命令
+        run: pnpm docs:build  # 确保这个命令和你本地的文档构建命令一致
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -42,7 +45,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist  # 替换为你的构建输出目录
+          path: docs/.vitepress/dist  # 替换为你的文档构建输出目录
 
   deploy:
     environment:

@@ -1,9 +1,10 @@
 name: Publish to npm
 
+# 仅在打 Tag 时触发（Tag 格式为 v*，比如 v1.0.4），避免重复发布
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*'
 
 jobs:
   publish:
@@ -11,26 +12,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史，用于获取版本号
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'  # 缓存 pnpm 依赖，加速安装
 
-      # 替换原来的 pnpm 安装方式，改用官方 action
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest  # 使用最新版 pnpm，也可以指定版本如 8.15.0
+          version: 9.0.6  # 固定 pnpm 版本，避免兼容问题
+          run_install: false
+
+      - name: Verify pnpm
+        run: pnpm --version  # 验证 pnpm 安装成功
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile  # 锁定依赖版本，加速安装
 
       - name: Build package
-        run: pnpm build
+        run: pnpm build  # 执行你项目的构建命令
 
       - name: Publish to npm
         run: pnpm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # 读取 GitHub Secrets 中的 Token

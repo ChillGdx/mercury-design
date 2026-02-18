@@ -1,9 +1,9 @@
 {
-  "name": "@hasonocell/mercury-design",
+  "name": "@chillgdx/mercury-design",
   "version": "1.0.3",
   "description": "Vue3 components library",
   "author": {
-    "name": "HasonoCell"
+    "name": "ChillGdx"
   },
   "license": "MIT",
   "keywords": [
@@ -11,10 +11,10 @@
     "Vue3",
     "UI"
   ],
-  "homepage": "https://hasonocell.github.io/Mercury-Design/",
+  "homepage": "https://github.com/ChillGdx/mercury-design",
   "repository": {
     "type": "github",
-    "url": "https://github.com/HasonoCell/Mercury-Design"
+    "url": "https://github.com/ChillGdx/mercury-design"
   },
   "files": [
     "dist"

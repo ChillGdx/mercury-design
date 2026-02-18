@@ -4,7 +4,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 export default defineConfig({
   title: 'Mercury-Design',
   description: 'A simple UI component library for Vue3',
-  base: '/Mercury-Design/',
+  base: '/mercury-design/',
   // vite 配置项是为了让文档中可以书写自定义组件（支持JSX/TSX语法）
 
   vite: {

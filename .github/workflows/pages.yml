@@ -1,23 +1,20 @@
 name: Deploy GitHub Pages
 
-# push 到 master 分支触发，或手动触发
 on:
   push:
     branches: [ master ]
-    # 仅在文档相关文件变更时触发（可选，减少无用运行）
     paths:
       - 'docs/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
-  workflow_dispatch:  # 允许手动触发
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
 
-# Pages 部署需要的权限
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 避免同时部署，取消正在进行的部署
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -33,19 +30,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
 
+      # 核心修复：手动配置 PNPM_HOME 并加入 PATH，确保 pnpm 能被找到
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9.0.6
           run_install: false
+        env:
+          PNPM_HOME: /usr/local/bin  # 把 pnpm 安装到系统 PATH 目录
+      
+      # 验证 pnpm 安装并强制刷新 PATH
+      - name: Verify pnpm installation
+        run: |
+          echo "PNPM_HOME=$(pnpm env path)" >> $GITHUB_ENV
+          echo "$(pnpm env path)" >> $GITHUB_PATH
+          pnpm --version  # 输出版本号，确认安装成功
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build documentation
-        run: pnpm docs:build  # 替换为你实际的文档构建命令（比如 vuepress build docs）
+        run: pnpm docs:build  # 确认这个命令和你本地一致
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -53,14 +59,14 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist  # 替换为你实际的文档构建输出目录
+          path: docs/.vitepress/dist  # 确认是你的文档输出目录
 
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build  # 依赖 build 任务完成
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
